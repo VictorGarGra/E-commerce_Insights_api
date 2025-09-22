@@ -24,7 +24,7 @@ FROM eclipse-temurin:17-jre-jammy
 WORKDIR /app
 
 # Copiamos ÚNICAMENTE el archivo .jar desde la etapa de 'build'
-COPY --from=build /app/target/*.jar app.jar
+COPY --from=build /app/target/insights-api-0.0.1-SNAPSHOT.jar app.jar
 
 # Exponemos el puerto
 EXPOSE 8080
