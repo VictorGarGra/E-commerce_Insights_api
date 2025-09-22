@@ -1,33 +1,22 @@
 # --- ETAPA 1: Construcción (Build) ---
-# Usamos una imagen que tiene Maven y Java JDK para compilar el proyecto
 FROM maven:3.8-openjdk-17 AS build
-
-# Establecemos el directorio de trabajo
 WORKDIR /app
-
-# Copiamos el archivo pom.xml y descargamos las dependencias
 COPY pom.xml .
 RUN mvn dependency:go-offline
-
-# Copiamos el resto del código fuente
 COPY src ./src
-
-# Compilamos la aplicación, omitiendo las pruebas. Esto creará la carpeta /app/target
+# Compila y empaqueta la aplicación
 RUN mvn clean package -DskipTests
+
+# --- NUEVO PASO: Renombramos el archivo JAR a un nombre predecible ---
+RUN mv /app/target/*.jar /app/target/app.jar
 
 
 # --- ETAPA 2: Ejecución (Runtime) ---
-# Usamos una imagen más ligera que solo tiene Java JRE para correr la aplicación
 FROM eclipse-temurin:17-jre-jammy
-
-# Establecemos el directorio de trabajo
 WORKDIR /app
 
-# Copiamos ÚNICAMENTE el archivo .jar desde la etapa de 'build'
-COPY --from=build /app/target/insights-api-0.0.1-SNAPSHOT.jar app.jar
+# Ahora la copia es más simple y segura porque el nombre es siempre 'app.jar'
+COPY --from=build /app/target/app.jar .
 
-# Exponemos el puerto
 EXPOSE 8080
-
-# Comando para iniciar la aplicación
-ENTRYPOINT ["java","-jar","/app.jar"]
+ENTRYPOINT ["java","-jar","app.jar"]
