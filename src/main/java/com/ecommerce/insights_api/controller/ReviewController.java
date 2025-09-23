@@ -9,9 +9,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/reviews")
-@CrossOrigin(origins = "http://localhost:4200") // <--- AÑADE ESTA LÍNEA
+@CrossOrigin(origins = {"http://localhost:4200", "https://ecomerceinsights.netlify.app"})
 public class ReviewController {
-
     @Autowired
     private ReviewService reviewService;
 
