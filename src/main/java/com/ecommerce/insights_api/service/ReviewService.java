@@ -17,8 +17,9 @@ public class ReviewService {
     private final RestTemplate restTemplate = new RestTemplate();
 
     // 2. INYECTA LA URL DESDE LA CONFIGURACIÓN
-    @Value("${ML_API_URL}")
-    private String mlApiUrl;
+
+    // Reemplaza la línea del @Value por esto:
+    private String mlApiUrl = "https://ia-microservice-ia-sentimiento.onrender.com";
 
     public Review createReview(Review review) {
         String comment = review.getUserComment();
@@ -42,7 +43,13 @@ public class ReviewService {
 
     private static class SentimentResponse {
         private String sentiment;
-        public String getSentiment() { return sentiment; }
-        public void setSentiment(String sentiment) { this.sentiment = sentiment; }
+
+        public String getSentiment() {
+            return sentiment;
+        }
+
+        public void setSentiment(String sentiment) {
+            this.sentiment = sentiment;
+        }
     }
 }
