@@ -1,0 +1,14 @@
+# Ignorar el SDK de Google Cloud si lo tienes en la carpeta del proyecto
+google-cloud-sdk/
+.install/
+
+# Ignorar carpetas de compilación local
+target/
+build/
+bin/
+out/
+
+# Ignorar archivos del sistema y de IDE
+.idea/
+.vscode/
+.git/
