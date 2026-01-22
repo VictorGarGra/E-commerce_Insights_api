@@ -1,22 +1,30 @@
-# --- ETAPA 1: Construcción (Build) ---
-FROM maven:3.8-openjdk-17 AS build
-WORKDIR /app
+# --- Etapa 1: La Construcción (El Taller ) ---
+FROM eclipse-temurin:17-jdk-jammy AS build
+
+# Establecemos el directorio de trabajo
+WORKDIR /workspace/app
+
+# 1. PRIMERO copiamos el archivo mvnw
+COPY mvnw .
+COPY .mvn .mvn
 COPY pom.xml .
-RUN mvn dependency:go-offline
-COPY src ./src
-# Compila y empaqueta la aplicación
-RUN mvn clean package -DskipTests
 
-# --- NUEVO PASO: Renombramos el archivo JAR a un nombre predecible ---
-RUN mv /app/target/*.jar /app/target/app.jar
+# 2. DESPUÉS le damos permisos (ahora que ya existe en el contenedor)
+RUN chmod +x mvnw
 
+# Descargamos dependencias
+RUN ./mvnw dependency:go-offline
 
-# --- ETAPA 2: Ejecución (Runtime) ---
+# Copiamos el código y compilamos
+COPY src src
+RUN ./mvnw package -DskipTests
+
+# --- Etapa 2: La Ejecución (El Escenario ) ---
 FROM eclipse-temurin:17-jre-jammy
-WORKDIR /app
+WORKDIR /workspace/app
 
-# Ahora la copia es más simple y segura porque el nombre es siempre 'app.jar'
-COPY --from=build /app/target/app.jar .
+# Copiamos el JAR generado
+COPY --from=build /workspace/app/target/*.jar app.jar
 
-EXPOSE 8080
-ENTRYPOINT ["java","-jar","app.jar"]
+# Google Cloud Run usa la variable $PORT, así que la inyectamos al arrancar
+ENTRYPOINT ["sh", "-c", "java -jar app.jar --server.port=${PORT:-8080}"]
