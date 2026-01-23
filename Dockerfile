@@ -16,4 +16,5 @@ COPY --from=build /workspace/app/target/*.jar app.jar
 
 ENV JAVA_OPTS="-Xms128m -Xmx512m"
 
-ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar app.jar --server.port=${PORT:-8080}"]
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
