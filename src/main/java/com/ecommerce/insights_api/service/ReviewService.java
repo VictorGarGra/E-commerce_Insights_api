@@ -19,7 +19,7 @@ public class ReviewService {
     // 2. INYECTA LA URL DESDE LA CONFIGURACIÓN
 
     // Reemplaza la línea del @Value por esto:
-    private String mlApiUrl = "https://ia-microservice-ia-sentimiento.onrender.com";
+    private String mlApiUrl = "https://sentiment-api-916100036986.us-central1.run.app";
 
     public Review createReview(Review review) {
         String comment = review.getUserComment();
